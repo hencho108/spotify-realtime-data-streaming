@@ -42,5 +42,4 @@ variable "spotify_redirect_uri" {
   default     = "http://localhost:7777/callback"
   type        = string
 }
-  
-}
+
