@@ -15,6 +15,7 @@ def read_parameter_from_ssm(parameter_name):
     response = ssm.get_parameter(
         Name="/spotify-streaming/" + parameter_name, WithDecryption=True
     )
+    print(response)
     return response["Parameter"]["Value"]
 
 
@@ -23,7 +24,9 @@ def instantiate_spotify_client():
     client_secret = read_parameter_from_ssm("client_secret")
     redirect_uri = read_parameter_from_ssm("redirect_uri")
     print("spotify client_id, client_secret, redirect_uri")
-    print(client_id, client_secret, redirect_uri)
+    print(client_id)
+    print(client_secret)
+    print(redirect_uri)
 
     sp = spotipy.Spotify(
         auth_manager=SpotifyOAuth(
