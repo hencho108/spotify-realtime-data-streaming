@@ -11,5 +11,6 @@ RUN pip install pipenv==2022.5.2
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
 ENV PATH=".venv/bin:$PATH"
+ENV AWS_CONTAINER_CREDENTIALS_RELATIVE_URI="/v2/credentials"
 
 CMD [ "/app/.venv/bin/python3", "app.py" ]

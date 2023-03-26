@@ -23,13 +23,18 @@ resource "aws_iam_role" "stream_project_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "project_policy" {
+resource "aws_iam_role_policy_attachment" "project_s3_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
   role       = aws_iam_role.stream_project_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "project_ec2_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  role       = aws_iam_role.stream_project_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "project_ssm_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
   role       = aws_iam_role.stream_project_role.name
 }
 
