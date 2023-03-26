@@ -12,4 +12,4 @@ RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
 ENV PATH=".venv/bin:$PATH"
 
-CMD [ "python", "app.py" ]
+CMD [ "/app/.venv/bin/python3", "app.py" ]

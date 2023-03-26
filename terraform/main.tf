@@ -33,21 +33,6 @@ resource "aws_iam_role_policy_attachment" "project_ec2_policy" {
   role       = aws_iam_role.stream_project_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "project_glue_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess"
-  role       = aws_iam_role.stream_project_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "project_athena_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
-  role       = aws_iam_role.stream_project_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "project_rds_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
-  role       = aws_iam_role.stream_project_role.name
-}
-
 resource "tls_private_key" "kafka_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -60,7 +45,7 @@ resource "aws_key_pair" "generated_key" {
 
 resource "local_file" "kafka_key_local" {
   content  = tls_private_key.kafka_key.private_key_pem
-  filename = "~/.ssh/spotify_steam_kafka_key.pem"
+  filename = pathexpand("~/.ssh/spotify_stream_kafka_key.pem")
 }
 
 resource "aws_security_group" "security_group" {
@@ -90,9 +75,15 @@ resource "aws_security_group" "security_group" {
   }
 }
 
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "ec2_profile"
+  role = aws_iam_role.stream_project_role.name
+}
+
 resource "aws_instance" "kafka_instance" {
   ami                         = "ami-0d1ddd83282187d18"
   instance_type               = "t2.micro"
+  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.security_group.id]
   key_name                    = aws_key_pair.generated_key.key_name
@@ -104,7 +95,7 @@ resource "aws_instance" "kafka_instance" {
     command = <<EOT
       echo "Host spotify-stream-kafka
         HostName ${aws_instance.kafka_instance.public_ip}
-        User ec2-user
+        User ubuntu
         IdentityFile ${local_file.kafka_key_local.filename}" \
       >> ~/.ssh/config
     EOT

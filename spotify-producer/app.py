@@ -19,21 +19,11 @@ def read_parameter_from_ssm(parameter_name):
 
 
 def instantiate_spotify_client():
-    if "AWS_EXECUTION_ENV" in os.environ:
-        client_id = read_parameter_from_ssm("client_id")
-        client_secret = read_parameter_from_ssm("client_secret")
-        redirect_uri = read_parameter_from_ssm("redirect_uri")
-    else:
-        client_id = os.environ.get("SPOTIFY_CLIENT_ID")
-        client_secret = os.environ.get("SPOTIFY_CLIENT_SECRET")
-        redirect_uri = os.environ.get("SPOTIFY_REDIRECT_URI")
-        print(redirect_uri)
-
     sp = spotipy.Spotify(
         auth_manager=SpotifyOAuth(
-            client_id=client_id,
-            client_secret=client_secret,
-            redirect_uri=redirect_uri,
+            client_id=read_parameter_from_ssm("client_id"),
+            client_secret=read_parameter_from_ssm("client_secret"),
+            redirect_uri=read_parameter_from_ssm("redirect_uri"),
             scope="user-read-playback-state",
             open_browser=False,
         )
@@ -70,9 +60,9 @@ def main():
                     "first_artist": first_artist,
                     "artistis": artists,
                 }
-                # producer.send("spotify-stream", value="test test test")
-                # producer.send("spotify-stream", value=data)
-                # producer.flush()
+        # producer.send("spotify-stream", value="test test test")
+        # producer.send("spotify-stream", value=data)
+        # producer.flush()
         sleep(5)
 
 
