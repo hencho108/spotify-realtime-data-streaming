@@ -19,11 +19,17 @@ def read_parameter_from_ssm(parameter_name):
 
 
 def instantiate_spotify_client():
+    client_id = read_parameter_from_ssm("client_id")
+    client_secret = read_parameter_from_ssm("client_secret")
+    redirect_uri = read_parameter_from_ssm("redirect_uri")
+    print("spotify client_id, client_secret, redirect_uri")
+    print(client_id, client_secret, redirect_uri)
+
     sp = spotipy.Spotify(
         auth_manager=SpotifyOAuth(
-            client_id=read_parameter_from_ssm("client_id"),
-            client_secret=read_parameter_from_ssm("client_secret"),
-            redirect_uri=read_parameter_from_ssm("redirect_uri"),
+            client_id=client_id,
+            client_secret=client_secret,
+            redirect_uri=redirect_uri,
             scope="user-read-playback-state",
             open_browser=False,
         )
