@@ -3,10 +3,6 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_iam_user" "project_user" {
-  name = var.iam_user_name
-}
-
 resource "aws_iam_role" "stream_project_role" {
   name = var.iam_role_name
   assume_role_policy = jsonencode({
@@ -15,7 +11,7 @@ resource "aws_iam_role" "stream_project_role" {
       {
         Effect = "Allow"
         Principal = {
-          AWS = aws_iam_user.project_user.arn
+          Service = "ec2.amazonaws.com"
         }
         Action = "sts:AssumeRole"
       }
