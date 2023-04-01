@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# Make a request to the instance metadata service to check if we are running on EC2
 curl -s --max-time 1 http://169.254.169.254/latest/meta-data/instance-id 2>/dev/null >/tmp/instance_id
 CURL_EXIT_CODE=$?
 
