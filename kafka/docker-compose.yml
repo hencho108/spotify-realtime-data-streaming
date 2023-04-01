@@ -5,6 +5,9 @@ services:
     container_name: zookeeper
     ports:
       - "2181:2181"
+    networks:
+      - kafka-net
+
   kafka:
     image: wurstmeister/kafka
     container_name: kafka
@@ -22,6 +25,8 @@ services:
       - zookeeper
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - kafka-net
 
   kafdrop:
     image: obsidiandynamics/kafdrop
@@ -33,3 +38,8 @@ services:
       JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
     depends_on:
       - kafka
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
