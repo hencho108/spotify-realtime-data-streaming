@@ -37,17 +37,26 @@ def instantiate_spotify_client():
 
 def main():
     print("Starting Spotify Producer...")
-    sp = instantiate_spotify_client()
+    # sp = instantiate_spotify_client()
 
-    # producer = KafkaProducer(
-    #     bootstrap_servers=["localhost:9092"],
-    #     value_serializer=lambda x: json.dumps(x).encode("utf-8"),
-    # )
+    producer = KafkaProducer(
+        bootstrap_servers=["kafka:29092"],
+        value_serializer=lambda x: json.dumps(x).encode("utf-8"),
+    )
 
     previous_song_id = None
 
     while True:
-        current_track = sp.current_playback()
+        # current_track = sp.current_playback()
+        current_track = {
+            "item": {
+                "artists": [
+                    {"name": "dummy artist"},
+                ],
+                "name": "dummy song",
+                "id": "12345",
+            }
+        }
         if current_track:
             artists = current_track["item"]["artists"]
             first_artist = current_track["item"]["artists"][0]["name"]
@@ -64,9 +73,8 @@ def main():
                     "first_artist": first_artist,
                     "artistis": artists,
                 }
-        # producer.send("spotify-stream", value="test test test")
-        # producer.send("spotify-stream", value=data)
-        # producer.flush()
+        producer.send("spotify-stream", value=data)
+        producer.flush()
         sleep(5)
 
 
