@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  spark-master:
+    image: spark-pyspark
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+    hostname: spark-master
+    environment:
+      - SPARK_MASTER_WEBUI_PORT=8080
+    ports:
+      - "8080:8080"
+    networks:
+      - spark-net
+
+  spark-worker:
+    image: spark-pyspark
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    environment:
+      - SPARK_WORKER_WEBUI_PORT=8081
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    networks:
+      - spark-net
+
+networks:
+  spark-net:
+    driver: bridge
